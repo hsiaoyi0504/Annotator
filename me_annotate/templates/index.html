@@ -1,0 +1,28 @@
+
+
+{% load staticfiles %}
+<html>
+    <head>
+        <title>Annotation</title>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{% static 'css/me_annotate.css' %}">
+    </head>
+    <body>
+        <div>
+            <h1>Annotation</h1>
+        </div>
+
+        {% for paper in papers %}
+        <div>
+            <h2>
+                <a href="{% url 'paper_annotate' paper_name=paper.name%}">{{ paper.name }}</a>
+            </h2>
+            <div class='status'>
+            <h4>Gene: {{paper.modified}} Variance: {{paper.variance}}</h4>
+            <h4>Modified: {{paper.visited}}</h4>
+            </div>
+        </div>
+    {% endfor %}
+    </body>
+</html>

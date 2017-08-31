@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+    <head>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+        <script src="http://assets.annotateit.org/annotator/v1.1.0/annotator-full.min.js"></script>
+        <link rel="stylesheet" href="http://assets.annotateit.org/annotator/v1.1.0/annotator.min.css">
+        {% load static %}
+        <meta charset="utf-8">
+        <title>django-annotations</title>
+        <meta name="description" content="django-annotations demo.">
+        <meta name="author" content="PsypherPunk">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{% static 'css/me_annotate.css' %}">
+    </head>
+    <body>
+        <div id="content", class='texts'>
+            {% for text in texts %}
+                <h4>{{text.text}}}</h4>
+            {% endfor %}
+        </div>
+     </body>
+</html>
+
+{% block script %}
+<script>
+jQuery(function ($) {
+    var url      = window.location.href;    
+    var content= $('#content').annotator()
+                .annotator('setupPlugins', {}, {
+                'Store':{
+                    // The endpoint of the store on your server.
+                    prefix: '/annotator/annotations',
+
+                    // Attach the uri of the current page to all annotations to allow search.
+                    annotationData: {
+                        'uri': url
+                    },
+
+                    // This will perform a "search" action when the plugin loads. Will
+                    // request the last 20 annotations for the current url.
+                    // eg. /store/endpoint/search?limit=20&uri=http://this/document/only
+                    loadFromSearch: {
+                    'limit': 20,
+                    'uri': url
+                    }
+                 },
+                 'Permissions': false,
+                 'Auth': false,
+    });
+
+});
+
+</script>
+{% endblock %}

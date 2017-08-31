@@ -1,0 +1,18 @@
+h1{
+    font-family: 'Lobster', cursive;
+    background-color: #ff9400;
+}
+
+h2, h2 a, h3, h3 a{
+    font-family: 'Lobster', cursive;
+}
+
+.status{
+    color: #828282;
+    margin-left: 40px;
+}
+
+.texts{
+    font-family: "sans", sans-serif;
+    color: #281F1F;
+}
