@@ -28,7 +28,7 @@ def paper_annotate(request, paper_name):
 def dump_db(request):
     qs = annotator.models.Annotation.objects.all()
     qs_json = serializers.serialize('json', qs)
-    json.dump(open(dump_file, 'w'), qs_json)
+    json.dump(qs_json, open(dump_file, 'w'))
     return redirect(reverse('index'))
 
 def index(request):
