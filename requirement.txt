@@ -1,0 +1,5 @@
+django
+django-annotator
+django-bootstrap3
+django-cors-headers
+django-bootstrap-themes
