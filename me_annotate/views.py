@@ -26,7 +26,7 @@ def paper_annotate(request, paper_name):
     texts = []
     with open(file, 'r') as f:
         for line in f:
-            texts.append({'text':line})
+            texts.append({'text':line + '\n'})
     return render(request, 'paper.html', {'texts': texts})
 
 
