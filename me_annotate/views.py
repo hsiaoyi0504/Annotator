@@ -6,6 +6,7 @@ import annotator
 
 import os
 import json
+import datetime
 
 data_dir = 'tmp' # the directory store texts 
 dump_file = 'annotation.json'
@@ -13,9 +14,12 @@ log_file = 'log'
 if os.path.isfile(log_file) :
     log = json.load(open(log_file, 'r'))
 else:        
-    log = {}
+    log = {'latest_dump': 'None'}
 
 def paper_annotate(request, paper_name):
+    '''
+    Paper annotation entry point
+    '''
     log[paper_name]['visited'] += 1
     file = os.path.join(data_dir, paper_name)
     texts = []
@@ -26,9 +30,14 @@ def paper_annotate(request, paper_name):
 
 
 def dump_db(request):
+    '''
+    Dump all db to dump_file
+    '''
     qs = annotator.models.Annotation.objects.all()
     qs_json = serializers.serialize('json', qs)
     json.dump(qs_json, open(dump_file, 'w'))
+
+    log['latest_dump'] = datetime.datetime.now()
     return redirect(reverse('index'))
 
 def index(request):
@@ -49,7 +58,7 @@ def index(request):
                           'variance': variance
                           }
         papers.append(log[file])
-    return render(request, 'index.html', {'papers':papers})
+    return render(request, 'index.html', {'papers':papers, 'latest_dump':log['latest_dump']})
         
         
 

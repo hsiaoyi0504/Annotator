@@ -11,6 +11,8 @@
     <body>
         <div>
             <h1>Annotation</h1>
+            <a href="{% url 'dump_db' %}">Dump DB</a>
+            <p>Latest dump: {{latest_dump}}<p>
         </div>
 
         {% for paper in papers %}
@@ -20,7 +22,7 @@
             </h2>
             <div class='status'>
             <h4>Gene: {{paper.modified}} Variance: {{paper.variance}}</h4>
-            <h4>Modified: {{paper.visited}}</h4>
+            <h4>Visited: {{paper.visited}}</h4>
             </div>
         </div>
     {% endfor %}
