@@ -8,9 +8,10 @@ import os
 import json
 import datetime
 
-data_dir = 'tmp' # the directory store texts 
-dump_file = 'annotation.json'
-log_file = 'log'
+data_dir = os.getenv('DATA') if os.getenv('DATA') != None else 'tmp'
+dump_file = os.getenv('DUMP') if os.getenv('DUMP') != None else 'annotation.json' 
+log_file = os.getenv('LOG') if os.getenv('LOG') != None else 'log'
+
 if os.path.isfile(log_file) :
     log = json.load(open(log_file, 'r'))
 else:        
@@ -37,7 +38,7 @@ def dump_db(request):
     qs_json = serializers.serialize('json', qs)
     json.dump(qs_json, open(dump_file, 'w'))
 
-    log['latest_dump'] = datetime.datetime.now()
+    log['latest_dump'] = str(datetime.datetime.now())
     return redirect(reverse('index'))
 
 def index(request):
@@ -58,6 +59,8 @@ def index(request):
                           'variance': variance
                           }
         papers.append(log[file])
+
+    json.dump(log, open(log_file, 'w'))
     return render(request, 'index.html', {'papers':papers, 'latest_dump':log['latest_dump']})
         
         
