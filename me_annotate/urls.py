@@ -23,5 +23,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^annotator/', include("annotator.urls")),
     url(r"^demo/", views.DemoView.as_view(), name="demo"),
-    url(r"^paper_annotate/(?P<paper_name>[a-zA-Z0-9]+)", views.paper_annotate, name="paper_annotate"),
+    url(r"^paper_annotate/(?P<paper_name>.+)", views.paper_annotate, name="paper_annotate"),
 ]

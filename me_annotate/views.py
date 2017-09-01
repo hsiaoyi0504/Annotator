@@ -49,7 +49,7 @@ def index(request):
     papers, texts = [], []
     for file in files:
         try:
-            gene, variance = file.split('with')
+            gene, variance = file.split('_', 1) # parse file name
         except:
             gene, variance = '<unk>', '<unk>'
         if file not in log.keys():
