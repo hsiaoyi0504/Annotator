@@ -6,6 +6,7 @@ import annotator
 
 import os
 import json
+import copy
 import datetime
 
 data_dir = os.getenv('DATA') if os.getenv('DATA') != None else 'tmp'
@@ -29,6 +30,12 @@ def paper_annotate(request, paper_name):
             texts.append({'text':line + '\n'})
     return render(request, 'paper.html', {'texts': texts})
 
+def completed(request, paper_name):
+    '''
+    Finish the paper 
+    '''
+    log[paper_name]['completed'] = True
+    return redirect(reverse('index'))
 
 def dump_db(request):
     '''
@@ -41,6 +48,25 @@ def dump_db(request):
     log['latest_dump'] = str(datetime.datetime.now())
     return redirect(reverse('index'))
 
+def update_log():
+    '''
+    Update annotated number
+    '''
+    qs = annotator.models.Annotation.objects.all()
+    qs_raw = serializers.serialize('json', qs)
+    qs_json = json.loads(qs_raw)
+    for key, value in log.items():
+        if type(value) != dict:
+            continue
+        log[key]['annotated'] = 0
+    
+    for record in qs_json:
+        uri = record['fields']['uri']
+        filename = uri.split('/')[-1]
+        if filename in log.keys():
+            log[filename]['annotated'] += 1
+
+
 def index(request):
     '''
     Scan data_dir and display file names
@@ -49,17 +75,29 @@ def index(request):
     papers, texts = [], []
     for file in files:
         try:
-            gene, variance = file.split('_', 1) # parse file name
+            label, gene, variance = file.split('_', 2) # parse file name
         except:
-            gene, variance = '<unk>', '<unk>'
+            try:
+                gene, variance = file.split('_', 1)
+                label = 'unk'
+            except:
+                label, gene, variance = '<unk>', '<unk>', '<unk>'
+        if gene + '_' + variance in log.keys():
+            # inherit log
+            log[file] = copy.deepcopy(log[gene+'_'+variance])
+            log[file]['name'] = file
+            log[file]['label'] = label
         if file not in log.keys():
             log[file] = { 'name': file,
                           'visited':0,
+                          'completed':False,
                           'gene': gene,
-                          'variance': variance
+                          'variance': variance,
+                          'label': label,
+                          'annotated': 0
                           }
         papers.append(log[file])
-
+    update_log()
     json.dump(log, open(log_file, 'w'))
     return render(request, 'index.html', {'papers':papers, 'latest_dump':log['latest_dump']})
         

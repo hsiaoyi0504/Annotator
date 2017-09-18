@@ -23,6 +23,10 @@
             <div class='status'>
             <h4>Gene: {{paper.gene}} Variance: {{paper.variance}}</h4>
             <h4>Visited: {{paper.visited}}</h4>
+            <h4>Completed: {{paper.completed}}</h4>
+            <h4>Annotated: {{paper.annotated}}</h4>
+            <h4>Label: {{paper.label}}</h4>
+            <a href="{% url 'completed' paper_name=paper.name%}">complete</a>
             </div>
         </div>
     {% endfor %}

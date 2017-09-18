@@ -19,6 +19,7 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r"^completed/(?P<paper_name>.+)", views.completed, name="completed"),
     url(r'^db/', views.dump_db, name='dump_db'),
     url(r'^admin/', admin.site.urls),
     url(r'^annotator/', include("annotator.urls")),
