@@ -71,6 +71,7 @@ def index(request):
     '''
     Scan data_dir and display file names
     '''
+    update_log()
     files = [name for name in os.listdir(data_dir) if not name.startswith(".")]
     papers, texts = [], []
     for file in files:
@@ -97,7 +98,6 @@ def index(request):
                           'annotated': 0
                           }
         papers.append(log[file])
-    update_log()
     json.dump(log, open(log_file, 'w'))
     return render(request, 'index.html', {'papers':papers, 'latest_dump':log['latest_dump']})
         
