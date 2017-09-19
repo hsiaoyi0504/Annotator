@@ -65,13 +65,16 @@ def update_log():
         filename = uri.split('/')[-1]
         if filename in log.keys():
             log[filename]['annotated'] += 1
+            for i in range(1, 10):
+                fn = str(i) + '_' + filename
+                if fn in log.keys():
+                    log[fn]['annotated'] += 1
 
 
 def index(request):
     '''
     Scan data_dir and display file names
     '''
-    update_log()
     files = [name for name in os.listdir(data_dir) if not name.startswith(".")]
     papers, texts = [], []
     for file in files:
@@ -83,21 +86,25 @@ def index(request):
                 label = 'unk'
             except:
                 label, gene, variance = '<unk>', '<unk>', '<unk>'
-        if gene + '_' + variance in log.keys():
-            # inherit log
-            log[file] = copy.deepcopy(log[gene+'_'+variance])
-            log[file]['name'] = file
-            log[file]['label'] = label
+     
         if file not in log.keys():
-            log[file] = { 'name': file,
-                          'visited':0,
-                          'completed':False,
-                          'gene': gene,
-                          'variance': variance,
-                          'label': label,
-                          'annotated': 0
-                          }
+            if gene + '_' + variance in log.keys():
+                # inherit log
+                log[file] = copy.deepcopy(log[gene+'_'+variance])
+                log[file]['name'] = file
+                log[file]['label'] = label
+            else:
+                # default value
+                log[file] = { 'name': file,
+                             'visited':0,
+                             'completed':False,
+                             'gene': gene,
+                             'variance': variance,
+                             'label': label,
+                             'annotated': 0
+                             }
         papers.append(log[file])
+    update_log()
     json.dump(log, open(log_file, 'w'))
     return render(request, 'index.html', {'papers':papers, 'latest_dump':log['latest_dump']})
         
